@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Countdown</title>
+
+<!-- Seven Segment Font -->
+<style>
+@font-face {
+    font-family: 'SevenSegment';
+    src: url('https://cdn.jsdelivr.net/gh/kattergil/seven-seg-font/SevenSegment.ttf');
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #ff8c1a;
+    font-family: 'SevenSegment', monospace;
+    user-select: none;
+}
+
+#title {
+    font-size: 2vw;
+    margin-bottom: 2vh;
+    color: #ff8c1a;
+    font-family: 'Segoe UI', sans-serif;
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 10px rgba(255, 140, 0, 0.6);
+}
+
+#container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5vw;
+}
+
+#days {
+    font-size: 10vw;
+    text-align: right;
+    text-shadow:
+        0 0 12px rgba(255, 140, 0, 0.8),
+        0 0 28px rgba(255, 100, 0, 0.5);
+}
+
+#hours {
+    font-size: 10vw;
+    text-align: left;
+    text-shadow:
+        0 0 12px rgba(255, 140, 0, 0.8),
+        0 0 28px rgba(255, 100, 0, 0.5);
+}
+
+#days-label {
+    margin-left: 1vw;
+    font-size: 3vw;
+    font-family: 'Segoe UI', sans-serif;
+    color: #ff8c1a;
+    text-shadow: 0 0 10px rgba(255, 140, 0, 0.6);
+}
+</style>
+</head>
+
+<body>
+
+<div id="title">2027 수능</div>
+
+<div id="container">
+    <div style="display:flex; align-items:flex-end;">
+        <div id="days">--</div>
+        <div id="days-label">일</div>
+    </div>
+
+    <div id="hours">--:--:--</div>
+</div>
+
+<script>
+// 목표 시간 (KST)
+const target = new Date("2026-11-19T06:00:00+09:00");
+
+// 한국 시간 계산
+function getKST() {
+    const now = new Date();
+    const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+    return new Date(utc + 9 * 3600000);
+}
+
+function update() {
+    const now = getKST();
+    const diff = target - now;
+
+    const daysElem = document.getElementById("days");
+    const timeElem = document.getElementById("hours");
+
+    if (diff <= 0) {
+        daysElem.textContent = "00";
+        timeElem.textContent = "00:00:00";
+        return;
+    }
+
+    const sec = Math.floor(diff / 1000) % 60;
+    const min = Math.floor(diff / 1000 / 60) % 60;
+    const hr = Math.floor(diff / 1000 / 3600) % 24;
+    const days = Math.floor(diff / 1000 / 3600 / 24);
+
+    daysElem.textContent = String(days).padStart(1, '0');
+
+    timeElem.textContent =
+        String(hr).padStart(2, '0') + ":" +
+        String(min).padStart(2, '0') + ":" +
+        String(sec).padStart(2, '0');
+}
+
+setInterval(update, 1000);
+update();
+</script>
+
+</body>
+</html>
